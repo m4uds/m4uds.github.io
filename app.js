@@ -50,6 +50,8 @@ function app() {
   
       if (isDir) {
         anchor.href = `javascript:changeDir('${dir ? dir + '/' : ''}${fileName}')`;
+      } else if (path.endsWith('.mp4')) {
+        anchor.href = `javascript:playVideo('${path}')`;
       } else {
         anchor.href = path;
       }
@@ -142,3 +144,36 @@ async function getFileModifiedDate(path) {
 
 app()
 
+function playVideo(videoUrl) {
+  const videoContainer = document.createElement('div');
+  videoContainer.style.position = 'fixed';
+  videoContainer.style.top = '0';
+  videoContainer.style.left = '0';
+  videoContainer.style.width = '100%';
+  videoContainer.style.height = '100%';
+  videoContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+  videoContainer.style.display = 'flex';
+  videoContainer.style.justifyContent = 'center';
+  videoContainer.style.alignItems = 'center';
+  videoContainer.style.zIndex = '1000';
+
+  const video = document.createElement('video');
+  video.src = videoUrl;
+  video.controls = true;
+  video.style.maxWidth = '90%';
+  video.style.maxHeight = '90%';
+
+  videoContainer.appendChild(video);
+  document.body.appendChild(videoContainer);
+
+  // Close the video container when the video ends or when clicked outside the video
+  video.addEventListener('ended', () => {
+    document.body.removeChild(videoContainer);
+  });
+
+  videoContainer.addEventListener('click', (event) => {
+    if (event.target === videoContainer) {
+      document.body.removeChild(videoContainer);
+    }
+  });
+}
