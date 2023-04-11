@@ -47,7 +47,7 @@ function app() {
 
       // Remove unwanted files
       const relativePath = filePath.slice(prefix.length);
-      return !['file_map.json', 'map_dir.py', 'app.js', 'index.html', 'style.css'].includes(relativePath);
+      return !['file_map.json', 'map_dir.py', 'app.js', 'index.html', 'style.css',".DS_Store"].includes(relativePath);
     });
 
     const uniqueDirs = new Set();
