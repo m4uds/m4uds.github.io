@@ -21,7 +21,6 @@ function getIconEmoji(path) {
 }
 
 function app() {
-  console.log("SFS");
   let files = [];
 
   async function loadFiles() {
