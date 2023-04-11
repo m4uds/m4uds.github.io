@@ -11,3 +11,11 @@ a {
 a:hover{
   color: darkslateblue;
 }
+
+th {
+  text-align: left;
+}
+
+td {
+ padding-right: 15px;
+}

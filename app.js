@@ -74,7 +74,7 @@ function app() {
 
   function buildTableForDir(dir) {
     const fileTable = document.getElementById("file-table");
-    fileTable.innerHTML = '';
+    fileTable.innerHTML = "<tr><th>FILE</th><th></th><th></th><th>DATE MODIFIED</th><th>SIZE</th></tr>";
   
     const filePaths = listFilesInDir(dir);
   
@@ -200,8 +200,6 @@ async function getFileModifiedDate(path) {
     return `${newSize.toFixed(2)} ${units[index]}`;
   }
 }
-
-
 
 app()
 
