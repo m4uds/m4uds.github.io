@@ -1,4 +1,24 @@
-//play/here/test does not work consult 
+function getIconEmoji(path) {
+  if (path.endsWith('/')) {
+    return '📁';
+  } else if (path.match(/\.(jpg|jpeg|png|gif|svg|bmp|tiff|webp|ico)$/i)) {
+    return '🖼️';
+  } else if (path.match(/\.(mp4|mov|avi|mkv|wmv|mpg|mpeg|webm|flv|3gp)$/i)) {
+    return '🎞️';
+  } else if (path.match(/\.(pdf|doc|docx|xls|xlsx|ppt|pptx|txt|csv|md)$/i)) {
+    return '📄';
+  } else if (path.match(/\.(mp3|wav|ogg|flac|aac|m4a)$/i)) {
+    return '🎵';
+  } else if (path.match(/\.(zip|rar|7z|tar|gz|bz2)$/i)) {
+    return '🗜️';
+  } else if (path.match(/\.(js|css|html|xml|json|py|php|rb|java|cpp|cs|go|r|swift|yml|yaml|ini|conf|properties|log)$/i)) {
+    return '📜';
+  } else if (path.match(/\.(ttf|otf|woff|woff2|eot)$/i)) {
+    return '🔤';
+  } else {
+    return '📦';
+  }
+}
 
 function app() {
   console.log("SFS");
@@ -18,24 +38,54 @@ function app() {
 
   function listFilesInDir(dir) {
     const prefix = dir ? `${dir}/` : '';
-    return files.filter((filePath) => filePath.startsWith(prefix));
+    const filePaths = files.filter((filePath) => {
+      // Remove .git directory
+      if (filePath.startsWith('.git/')) return false;
+
+      // Check if the file path starts with the prefix
+      if (!filePath.startsWith(prefix)) return false;
+
+      // Remove unwanted files
+      const relativePath = filePath.slice(prefix.length);
+      return !['file_map.json', 'map_dir.py', 'app.js', 'index.html', 'style.css'].includes(relativePath);
+    });
+
+    const uniqueDirs = new Set();
+    filePaths.forEach((path) => {
+      const relativePath = dir ? path.slice(`${dir}/`.length) : path;
+      const parts = relativePath.split('/');
+      const isFolder = parts.length > 1;
+      if (isFolder) {
+        uniqueDirs.add(parts[0]);
+      }
+    });
+
+    return filePaths.filter((path) => {
+      const relativePath = dir ? path.slice(`${dir}/`.length) : path;
+      const parts = relativePath.split('/');
+      const isFolder = parts.length > 1;
+      if (isFolder) {
+        return uniqueDirs.has(parts[0]);
+      } else {
+        return true;
+      }
+    });
   }
+  
 
   function buildTableForDir(dir) {
     const fileTable = document.getElementById("file-table");
     fileTable.innerHTML = '';
   
     const filePaths = listFilesInDir(dir);
-    const filteredFilePaths = filePaths.filter(
-      (path) => !['file_map.json', 'map_dir.py', 'app.js', 'index.html', 'style.css'].includes(path)
-    );
   
     const uniqueDirs = new Set();
   
-    filteredFilePaths.forEach(async (path) => {
-      const parts = path.split('/');
-      const isDir = parts.length > (dir ? 2 : 1);
-      const fileName = isDir ? parts[dir ? 1 : 0] : parts[dir ? 1 : 0];
+    filePaths.forEach(async (path) => {
+      const relativePath = dir ? path.slice(`${dir}/`.length) : path;
+      const parts = relativePath.split('/');
+      const isDir = parts.length > 1;
+      const fileName = parts[0];
   
       if (isDir && uniqueDirs.has(fileName)) {
         return;
@@ -48,15 +98,23 @@ function app() {
       const anchor = document.createElement('a');
       anchor.textContent = fileName;
   
+      const icon = document.createElement('span');
+      icon.textContent = isDir ? getIconEmoji(`${fileName}/`) : getIconEmoji(path);
+      icon.style.marginRight = '8px';
+  
       if (isDir) {
         anchor.href = `javascript:changeDir('${dir ? dir + '/' : ''}${fileName}')`;
       } else if (path.endsWith('.mp4')) {
         anchor.href = `javascript:playVideo('${path}')`;
       } else {
         anchor.href = path;
+        anchor.target = '_blank'; // Open non-video files in a new tab
       }
   
-      newRow.insertCell(0).appendChild(anchor);
+      const cell = newRow.insertCell(0);
+      cell.appendChild(icon);
+      cell.appendChild(anchor);
+  
       newRow.insertCell(1).textContent = '';
       newRow.insertCell(2).textContent = '';
   
@@ -80,6 +138,10 @@ function app() {
       }
     }
   }
+  
+
+  
+  
   function changeDir(dir) {
     buildTableForDir(dir);
   }
