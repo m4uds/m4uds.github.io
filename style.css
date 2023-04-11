@@ -1,37 +1,13 @@
 body{
-    font-family: 'IBM Plex Mono';
+    font-family: 'arial';
     font-size: small;
+    
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-#database-cont{
-    width: 65vw;
-  
+a:hover{
+  color: darkslateblue;
 }
-
-table {
-    text-align: left;
-    width: 100%;
-  }
-  a {
-    text-decoration: none;
-  }
- 
-  #add-file{
-    position: absolute;
-    right: 10px;
-    top:10px;
-    padding: 3px;
-    transition-duration: 5ms;
-    
-  }
-  #add-file:hover{
-    background-color: cornsilk;
-  }
-
-  h1{
-    margin-top: -5px;
-    width: auto;
-  }
-  h1:hover{
-    
-  }

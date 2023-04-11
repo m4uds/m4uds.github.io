@@ -128,7 +128,7 @@ function app() {
     });
   
     const navigation = document.getElementById("navigation");
-    navigation.innerHTML = `<a href="javascript:changeDir('')">database</a>`;
+    navigation.innerHTML = `<a href="javascript:changeDir('')">m4uds</a>`;
     if (dir) {
       const parts = dir.split('/');
       let path = '';
